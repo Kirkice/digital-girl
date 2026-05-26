@@ -1,0 +1,74 @@
+# Python environments and caches
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local config and secrets
+.env
+*.env
+!.env.example
+backend/config/*.env
+!backend/config/*.env.example
+
+# LiveTalking upstream checkout and runtime outputs
+backend/livetalking/
+backend/livetalking.log
+*.log
+
+# Model weights, avatars, media, and generated data
+assets/avatars/
+assets/voices/
+backend/models/
+backend/data/
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+*.engine
+*.bin
+*.pkl
+*.npy
+*.npz
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.wav
+*.mp3
+*.pcm
+
+# Rust
+target/
+services/*/target/
+Cargo.lock
+!services/*/Cargo.lock
+
+# Node/frontend caches
+node_modules/
+dist/
+build/
+.vite/
+.next/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

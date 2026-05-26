@@ -1,0 +1,75 @@
+diff --git a/llm.py b/llm.py
+index 9be5e19..d239b63 100644
+--- a/llm.py
++++ b/llm.py
+@@ -1,12 +1,62 @@
+ import time
+ import os
++import json
++import urllib.error
++import urllib.request
+ from typing import TYPE_CHECKING
+ if TYPE_CHECKING:
+     from avatars.base_avatar import BaseAvatar
+ from utils.logger import logger
+ 
++
++def _split_and_emit(text: str, avatar_session: 'BaseAvatar', datainfo: dict = {}):
++    result = ""
++    lastpos = 0
++    for i, char in enumerate(text):
++        if char in ",.!;:，。！？：；":
++            result = result + text[lastpos:i + 1]
++            lastpos = i + 1
++            if len(result) > 10:
++                logger.info(result)
++                avatar_session.put_msg_txt(result, datainfo)
++                result = ""
++    result = result + text[lastpos:]
++    if result:
++        avatar_session.put_msg_txt(result, datainfo)
++
++
++def _try_companion_core(message, avatar_session: 'BaseAvatar', datainfo: dict = {}) -> bool:
++    base_url = os.getenv("COMPANION_CORE_URL", "http://127.0.0.1:8787").rstrip("/")
++    payload = {
++        "session_id": str(getattr(avatar_session.opt, "sessionid", "local")),
++        "message": message,
++        "persona": os.getenv("DIGITAL_GIRL_PERSONA_NAME", "Digital Girl"),
++    }
++    data = json.dumps(payload).encode("utf-8")
++    request = urllib.request.Request(
++        base_url + "/chat",
++        data=data,
++        headers={"Content-Type": "application/json"},
++        method="POST",
++    )
++    try:
++        with urllib.request.urlopen(request, timeout=45) as response:
++            body = json.loads(response.read().decode("utf-8"))
++        reply = body.get("reply", "")
++        if not reply:
++            return False
++        logger.info(f"companion-core reply source={body.get('source', 'unknown')}")
++        _split_and_emit(reply, avatar_session, datainfo)
++        return True
++    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
++        logger.warning(f"companion-core unavailable, fallback to built-in LLM: {error}")
++        return False
++
+ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
+     try:
++        if _try_companion_core(message, avatar_session, datainfo):
++            return
++
+         opt = avatar_session.opt
+         start = time.perf_counter()
+         from openai import OpenAI
+@@ -39,7 +89,6 @@ def llm_response(message,avatar_session:'BaseAvatar',datainfo:dict={}):
+                 if msg is None:
+                     continue
+                 lastpos=0
+-                #msglist = re.split('[,.!;:，。！?]',msg)
+                 for i, char in enumerate(msg):
+                     if char in ",.!;:，。！？：；" :
+                         result = result+msg[lastpos:i+1]
