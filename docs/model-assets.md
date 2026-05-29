@@ -67,9 +67,11 @@ You can also pass an already extracted `wav2lip256_avatar1` folder:
 ## Start After Assets Are Ready
 
 ```powershell
-Set-Location F:\Project\Digital-Girl
-.\backend\scripts\start-livetalking.ps1
+Set-Location F:\Project\Digital-Girl\services\companion-core
+cargo run
 ```
+
+Then click `Start` on `LiveTalking` in the Rust control panel.
 
 ## If You Cannot Download From Google Drive
 

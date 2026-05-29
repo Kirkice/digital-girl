@@ -1,0 +1,22 @@
+# companion-core runtime configuration
+# Copy this file to backend/config/companion-core.toml for local use.
+# The real .toml file is ignored by git.
+# Set COMPANION_CORE_CONFIG_FILE to override the default config path.
+
+[server]
+host = "127.0.0.1"
+port = 8787
+
+[persona]
+name = "Digital Girl"
+summary = "A warm, playful, private AI companion."
+system_prompt = "You are a warm, concise, emotionally attentive companion. Reply naturally and avoid long lectures."
+
+[llm]
+# Optional OpenAI-compatible provider. If these are not set, companion-core uses local placeholder replies.
+# Example for DeepSeek V4:
+# base_url = "https://api.deepseek.com"
+# model = "deepseek-v4-pro"
+base_url = ""
+model = "deepseek-v4-pro"
+api_key = ""

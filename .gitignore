@@ -18,6 +18,8 @@ htmlcov/
 !.env.example
 backend/config/*.env
 !backend/config/*.env.example
+backend/config/*.toml
+!backend/config/*.toml.example
 
 # LiveTalking upstream checkout and runtime outputs
 backend/livetalking/
@@ -56,6 +58,7 @@ backend/data/
 # Rust
 target/
 services/*/target/
+services/*/target-test-runtime/
 Cargo.lock
 !services/*/Cargo.lock
 

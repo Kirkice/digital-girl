@@ -38,6 +38,8 @@ Set-Location F:\Project\Digital-Girl\services\companion-core
 cargo run --bin companion-core
 ```
 
+Use the control panel for normal local startup. Running the HTTP sidecar directly is only for focused debugging and does not manage the LiveTalking process lifecycle.
+
 Health check:
 
 ```powershell
@@ -52,6 +54,24 @@ Invoke-RestMethod http://127.0.0.1:8787/chat `
   -ContentType 'application/json' `
   -Body '{"session_id":"local","message":"hello"}'
 ```
+
+## Local Config
+
+Preferred local config file:
+
+```powershell
+Set-Location F:\Project\Digital-Girl
+Copy-Item .\backend\config\companion-core.toml.example .\backend\config\companion-core.toml
+notepad .\backend\config\companion-core.toml
+```
+
+The real `backend/config/companion-core.toml` file is ignored by git. Override the default path with:
+
+```powershell
+$env:COMPANION_CORE_CONFIG_FILE = "F:\path\to\companion-core.toml"
+```
+
+Legacy `.env` config files are still supported through `COMPANION_CORE_ENV_FILE`, but TOML is the preferred local format.
 
 ## Future Integration
 

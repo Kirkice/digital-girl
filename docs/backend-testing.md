@@ -36,15 +36,18 @@ These assets must be downloaded manually from the official LiveTalking links. Se
 Start the service:
 
 ```powershell
-Set-Location F:\Project\Digital-Girl
-.\backend\scripts\start-companion-core.ps1
+Set-Location F:\Project\Digital-Girl\services\companion-core
+cargo run
 ```
+
+In the Rust control panel, click `Start` on `companion-core`.
 
 In another terminal:
 
 ```powershell
 Invoke-RestMethod http://127.0.0.1:8787/health
 Invoke-RestMethod http://127.0.0.1:8787/persona
+Invoke-RestMethod http://127.0.0.1:8787/llm/status
 Invoke-RestMethod http://127.0.0.1:8787/chat `
   -Method Post `
   -ContentType 'application/json' `
@@ -55,7 +58,62 @@ Expected behavior without LLM credentials:
 
 - `/health` returns `status = ok`.
 - `/persona` returns configured persona text.
+- `/llm/status` returns whether `LLM_BASE_URL` and `LLM_API_KEY` are configured without exposing the API key.
 - `/chat` returns a local placeholder reply with `source = local`.
+
+## Real LLM Configuration
+
+companion-core supports an OpenAI-compatible chat completion provider. The preferred local setup is:
+
+```powershell
+Set-Location F:\Project\Digital-Girl
+Copy-Item .\backend\config\companion-core.toml.example .\backend\config\companion-core.toml
+notepad .\backend\config\companion-core.toml
+```
+
+Set these values in `backend/config/companion-core.toml`:
+
+```toml
+[llm]
+base_url = "https://your-openai-compatible-endpoint/v1"
+model = "your-model-name"
+api_key = "your-api-key"
+```
+
+The real `companion-core.toml` file is ignored by git. Process environment variables still take priority over the file. To use a different config path, set:
+
+```powershell
+$env:COMPANION_CORE_CONFIG_FILE = "F:\path\to\companion-core.toml"
+```
+
+Legacy `.env` files still work through `COMPANION_CORE_ENV_FILE`, but TOML is now the preferred local secret format.
+
+After starting `companion-core` from the control panel, verify safe status:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8787/llm/status
+```
+
+Then test chat:
+
+```powershell
+Invoke-RestMethod http://127.0.0.1:8787/chat `
+  -Method Post `
+  -ContentType 'application/json' `
+  -Body '{"session_id":"llm-test","message":"用一句话介绍你自己"}'
+```
+
+Expected behavior with valid LLM credentials:
+
+- `/llm/status` returns `configured = true`.
+- `/chat` returns `source = llm`.
+
+Expected behavior with invalid or unreachable LLM credentials:
+
+- `/chat` returns a local placeholder reply with `source = fallback`.
+- The response includes a `detail` field describing the provider error.
+
+The egui control panel also has an `LLM` section with a `Reload Config` button and a safe `Test Chat` button. The API key is only shown as configured or missing; the secret value is never displayed.
 
 ## LiveTalking Bridge Behavior
 
@@ -108,9 +166,11 @@ This still requires model assets:
 Once assets are present:
 
 ```powershell
-Set-Location F:\Project\Digital-Girl
-.\backend\scripts\start-livetalking.ps1
+Set-Location F:\Project\Digital-Girl\services\companion-core
+cargo run
 ```
+
+In the Rust control panel, click `Start` on `LiveTalking`.
 
 ## Current Verified State
 
@@ -120,5 +180,6 @@ Verified on 2026-05-26:
 - `python -m py_compile llm.py` passes for LiveTalking bridge.
 - `GET /health` returns `status = ok`.
 - `GET /persona` returns the default persona.
+- `GET /llm/status` returns safe LLM configuration status.
 - `POST /chat` returns a local reply with `source = local` when no LLM credentials are configured.
 - LiveTalking `llm.py` bridge can call `companion-core` with a fake avatar session.

@@ -24,34 +24,21 @@ Do not create a second LiveTalking env by default. The user copied a working `.v
 From the project root:
 
 ```powershell
-Set-Location F:/Project/Digital-Girl
-./backend/scripts/start-control-panel.ps1
-```
-
-This opens the Rust egui control panel. Use the panel buttons to start/stop companion-core and LiveTalking, inspect status, open URLs, and view logs. Closing the panel stops any server process it started.
-
-The panel can also be launched directly with Cargo:
-
-```powershell
 Set-Location F:/Project/Digital-Girl/services/companion-core
 cargo run
 ```
 
-For direct foreground startup in the current terminal:
+This opens the Rust egui control panel. Use the panel buttons to start/stop companion-core and LiveTalking, inspect status, open URLs, and view logs. Closing the panel stops any server process it started.
 
-```powershell
-Set-Location F:/Project/Digital-Girl
-./backend/scripts/start-companion-core.ps1
-./backend/scripts/start-livetalking.ps1
-```
+Use the Rust control panel buttons to start or stop companion-core and LiveTalking. Closing the control panel stops any service process it started.
 
-The LiveTalking startup script should print this Python path:
+The LiveTalking log stream in the control panel should show this Python path:
 
 ```text
 Python: F:\Project\Digital-Girl\.venv\Scripts\python.exe
 ```
 
-LiveTalking should then log:
+LiveTalking should then log lines like:
 
 ```text
 Using cuda for inference.
@@ -140,7 +127,7 @@ git status --ignored --short
 
 ## Windows Terminal Pitfalls
 
-- If `start-livetalking.ps1` is run from `C:/Users/admin`, PowerShell reports that `./backend/scripts/start-livetalking.ps1` cannot be found. Always `Set-Location F:/Project/Digital-Girl` first.
+- If `cargo run` is launched from the wrong directory, Cargo will not find the `companion-core` crate. Always `Set-Location F:/Project/Digital-Girl/services/companion-core` first.
 - VS Code terminal output may show an old failed startup even while a later process is running.
 - To verify the actual listener:
 
@@ -152,8 +139,8 @@ if ($null -ne $c) { Get-Process -Id $c.OwningProcess }
 - The desktop control panel can be opened with:
 
 ```powershell
-Set-Location F:/Project/Digital-Girl
-./backend/scripts/start-control-panel.ps1
+Set-Location F:/Project/Digital-Girl/services/companion-core
+cargo run
 ```
 
 ## Architecture Decisions From Setup

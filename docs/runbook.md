@@ -100,14 +100,16 @@ If it does not connect:
 - Text sent from phone causes the avatar to speak.
 - Interrupt button stops current speech.
 
-## 7. Optional: Start Rust Companion Core
+## 7. Start The Rust Control Panel
 
-The Rust sidecar is for persona, memory, and LLM routing. It is not required for the first LiveTalking demo.
+The Rust control panel owns local service lifetime. Use it to start or stop companion-core and LiveTalking.
 
 ```powershell
-Set-Location F:\Project\Digital-Girl
-.\backend\scripts\start-companion-core.ps1
+Set-Location F:\Project\Digital-Girl\services\companion-core
+cargo run
 ```
+
+Then click `Start` on `companion-core` or `LiveTalking` as needed.
 
 Health check:
 
