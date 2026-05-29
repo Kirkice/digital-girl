@@ -24,9 +24,18 @@ Keep these in Python/LiveTalking for now:
 
 ## Run
 
+From this crate, `cargo run` opens the egui control panel for the full local stack:
+
 ```powershell
 Set-Location F:\Project\Digital-Girl\services\companion-core
 cargo run
+```
+
+To run only the HTTP sidecar service in the current terminal:
+
+```powershell
+Set-Location F:\Project\Digital-Girl\services\companion-core
+cargo run --bin companion-core
 ```
 
 Health check:

@@ -25,6 +25,22 @@ This is the short context file for future setup/debug sessions. For detailed not
 
 ```powershell
 Set-Location F:/Project/Digital-Girl
+./backend/scripts/start-control-panel.ps1
+```
+
+This opens the Rust egui control panel. Use the panel buttons to start/stop companion-core and LiveTalking, inspect status, open URLs, and view logs. Closing the panel stops any server process it started.
+
+The panel can also be launched directly with Cargo:
+
+```powershell
+Set-Location F:/Project/Digital-Girl/services/companion-core
+cargo run
+```
+
+Direct foreground startup is also available:
+
+```powershell
+Set-Location F:/Project/Digital-Girl
 ./backend/scripts/start-companion-core.ps1
 ./backend/scripts/start-livetalking.ps1
 ```

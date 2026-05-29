@@ -18,11 +18,17 @@ if (-not (Test-Path $LiveTalkingDir)) {
 
 Set-Location $LiveTalkingDir
 
+$Host.UI.RawUI.WindowTitle = "Digital-Girl LiveTalking"
 Write-Host "Starting LiveTalking..." -ForegroundColor Cyan
+Write-Host "Project: $ProjectRoot"
+Write-Host "LiveTalking: $LiveTalkingDir"
 Write-Host "Model: $Model"
 Write-Host "Avatar: $AvatarId"
 Write-Host "Transport: $Transport"
 Write-Host "Port: $Port"
+Write-Host "Page: http://127.0.0.1:$Port/index.html"
 Write-Host "Python: $PythonExe"
+Write-Host "Close this server window to stop LiveTalking." -ForegroundColor Yellow
+Write-Host ""
 
 & $PythonExe app.py --transport $Transport --model $Model --avatar_id $AvatarId --listenport $Port

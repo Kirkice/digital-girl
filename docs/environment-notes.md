@@ -25,6 +25,22 @@ From the project root:
 
 ```powershell
 Set-Location F:/Project/Digital-Girl
+./backend/scripts/start-control-panel.ps1
+```
+
+This opens the Rust egui control panel. Use the panel buttons to start/stop companion-core and LiveTalking, inspect status, open URLs, and view logs. Closing the panel stops any server process it started.
+
+The panel can also be launched directly with Cargo:
+
+```powershell
+Set-Location F:/Project/Digital-Girl/services/companion-core
+cargo run
+```
+
+For direct foreground startup in the current terminal:
+
+```powershell
+Set-Location F:/Project/Digital-Girl
 ./backend/scripts/start-companion-core.ps1
 ./backend/scripts/start-livetalking.ps1
 ```
@@ -133,10 +149,11 @@ $c = Get-NetTCPConnection -LocalPort 8010 -State Listen -ErrorAction SilentlyCon
 if ($null -ne $c) { Get-Process -Id $c.OwningProcess }
 ```
 
-- A visible server window can be opened with:
+- The desktop control panel can be opened with:
 
 ```powershell
-Start-Process powershell.exe -ArgumentList @('-NoExit','-Command','$host.UI.RawUI.WindowTitle = "LiveTalking Server - Digital-Girl"; Set-Location "F:/Project/Digital-Girl"; ./backend/scripts/start-livetalking.ps1')
+Set-Location F:/Project/Digital-Girl
+./backend/scripts/start-control-panel.ps1
 ```
 
 ## Architecture Decisions From Setup
